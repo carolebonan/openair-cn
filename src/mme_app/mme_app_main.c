@@ -50,6 +50,7 @@
 #include "mme_app_statistics.h"
 #include "common_defs.h"
 #include "mme_app_edns_emulation.h"
+#include "mme_app_handover_signaling_handler.h"
 #include "nas_proc.h"
 
 mme_app_desc_t                          mme_app_desc = {.rw_lock = PTHREAD_RWLOCK_INITIALIZER, 0} ;
@@ -83,6 +84,11 @@ void *mme_app_thread (void *args)
 
     case MME_APP_INITIAL_CONTEXT_SETUP_RSP:{
         mme_app_handle_initial_context_setup_rsp (&MME_APP_INITIAL_CONTEXT_SETUP_RSP (received_message_p));
+      }
+      break;
+
+    case MME_APP_PATH_SWITCH_REQUEST:{
+        mme_app_handle_path_switch_request (&MME_APP_PATH_SWITCH_REQUEST (received_message_p));
       }
       break;
 
@@ -170,8 +176,13 @@ void *mme_app_thread (void *args)
           /*
            * Updating statistics
            */
-          update_mme_app_stats_s1u_bearer_add();
-          unlock_ue_contexts(ue_context_p);
+          if (ue_context_p->ue_context_current_proc == X2_HO_PROC) {
+            unlock_ue_contexts(ue_context_p);
+	    mme_app_handle_modify_bearer_resp_during_ho (&received_message_p->ittiMsg.s11_modify_bearer_response);
+	  } else {
+            update_mme_app_stats_s1u_bearer_add();
+            unlock_ue_contexts(ue_context_p);
+	  }
         }
       }
       break;

@@ -63,6 +63,8 @@
 #include "sgw_context_manager.h"
 #include "pgw_procedures.h"
 #include "async_system.h"
+#include "sgw_handover_signaling_handler.h"
+
 
 extern sgw_app_t                        sgw_app;
 extern spgw_config_t                    spgw_config;
@@ -761,10 +763,10 @@ sgw_handle_modify_bearer_request (
   OAILOG_FUNC_IN(LOG_SPGW_APP);
   itti_s11_modify_bearer_response_t            *modify_response_p = NULL;
   s_plus_p_gw_eps_bearer_context_information_t *new_bearer_ctxt_info_p = NULL;
-  MessageDef                             *message_p = NULL;
-  sgw_eps_bearer_ctxt_t                 *eps_bearer_ctxt_p = NULL;
-  hashtable_rc_t                          hash_rc = HASH_TABLE_OK;
-  int                                     rv = RETURNok;
+  MessageDef                                   *message_p = NULL;
+  sgw_eps_bearer_ctxt_t                        *eps_bearer_ctxt_p = NULL;
+  hashtable_rc_t                               hash_rc = HASH_TABLE_OK;
+  int                                          rv = RETURNok;
 
 
   OAILOG_DEBUG (LOG_SPGW_APP, "Rx MODIFY_BEARER_REQUEST, teid "TEID_FMT"\n", modify_bearer_pP->teid);
@@ -802,26 +804,50 @@ sgw_handle_modify_bearer_request (
       rv = itti_send_msg_to_task (TASK_S11, INSTANCE_DEFAULT, message_p);
       OAILOG_FUNC_RETURN(LOG_SPGW_APP, rv);
     } else {
-      // TO DO
-      FTEID_T_2_IP_ADDRESS_T ((&modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid), (&eps_bearer_ctxt_p->enb_ip_address_S1u));
-      eps_bearer_ctxt_p->enb_teid_S1u = modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid.teid;
-      {
-        itti_sgi_update_end_point_response_t                   sgi_update_end_point_resp = {0};
+        if (eps_bearer_ctxt_p->enb_teid_S1u != INVALID_TEID) {
+	  // A X2 Handover is detected, Source eNB parameters have to be kept for later
+	        teid_t 	enb_teid_S1u_src = 0;
+          ip_address_t	*enb_ip_address_S1u_src = NULL;
 
-        sgi_update_end_point_resp.context_teid = modify_bearer_pP->teid;
-        sgi_update_end_point_resp.sgw_S1u_teid = eps_bearer_ctxt_p->s_gw_teid_S1u_S12_S4_up;
-        sgi_update_end_point_resp.enb_S1u_teid = eps_bearer_ctxt_p->enb_teid_S1u;
-        sgi_update_end_point_resp.eps_bearer_id = eps_bearer_ctxt_p->eps_bearer_id;
-        sgi_update_end_point_resp.status = 0x00;
-        rv = sgw_handle_sgi_endpoint_updated (&sgi_update_end_point_resp);
-        if (RETURNok == rv) {
-          if (spgw_config.pgw_config.pcef.automatic_push_dedicated_bearer_sdf_identifier) {
-            // upon S/P-GW config, establish a dedicated radio bearer
-            sgw_no_pcef_create_dedicated_bearer(modify_bearer_pP->teid);
+          OAILOG_DEBUG (LOG_SPGW_APP, " X2_HO DETECTED, T_ENB_TEID_S1U :" TEID_FMT" , S_ENB_TEID_S1U :"TEID_FMT"\n", 
+	        modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid.teid,  eps_bearer_ctxt_p->enb_teid_S1u);
+	   
+	        // Keep Source eNB parameters
+	        enb_teid_S1u_src = eps_bearer_ctxt_p->enb_teid_S1u;
+	  
+	        //Update the tunnel with new parameters
+	        FTEID_T_2_IP_ADDRESS_T ((&modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid), (&eps_bearer_ctxt_p->enb_ip_address_S1u));
+          eps_bearer_ctxt_p->enb_teid_S1u = modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid.teid;
+          {
+            itti_sgi_update_end_point_response_t                   sgi_update_end_point_resp = {0};
+            sgi_update_end_point_resp.context_teid = modify_bearer_pP->teid;
+            sgi_update_end_point_resp.sgw_S1u_teid = eps_bearer_ctxt_p->s_gw_teid_S1u_S12_S4_up;
+            sgi_update_end_point_resp.enb_S1u_teid = eps_bearer_ctxt_p->enb_teid_S1u;
+            sgi_update_end_point_resp.eps_bearer_id = eps_bearer_ctxt_p->eps_bearer_id;
+            sgi_update_end_point_resp.status = 0x00;
+            rv = sgw_handle_mobility_sgi_endpoint_updated (&sgi_update_end_point_resp, enb_teid_S1u_src);
+          }
+	      } else {
+          FTEID_T_2_IP_ADDRESS_T ((&modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid), (&eps_bearer_ctxt_p->enb_ip_address_S1u));
+
+          eps_bearer_ctxt_p->enb_teid_S1u = modify_bearer_pP->bearer_contexts_to_be_modified.bearer_contexts[0].s1_eNB_fteid.teid;
+          {
+            itti_sgi_update_end_point_response_t                   sgi_update_end_point_resp = {0};
+            sgi_update_end_point_resp.context_teid = modify_bearer_pP->teid;
+            sgi_update_end_point_resp.sgw_S1u_teid = eps_bearer_ctxt_p->s_gw_teid_S1u_S12_S4_up;
+            sgi_update_end_point_resp.enb_S1u_teid = eps_bearer_ctxt_p->enb_teid_S1u;
+            sgi_update_end_point_resp.eps_bearer_id = eps_bearer_ctxt_p->eps_bearer_id;
+            sgi_update_end_point_resp.status = 0x00;
+            rv = sgw_handle_sgi_endpoint_updated (&sgi_update_end_point_resp);
+            if (RETURNok == rv) {
+              if (spgw_config.pgw_config.pcef.automatic_push_dedicated_bearer_sdf_identifier) {
+                // upon S/P-GW config, establish a dedicated radio bearer
+                sgw_no_pcef_create_dedicated_bearer(modify_bearer_pP->teid);
+              }
+            }
           }
         }
       }
-    }
   } else {
     message_p = itti_alloc_new_message (TASK_SPGW_APP, S11_MODIFY_BEARER_RESPONSE);
 

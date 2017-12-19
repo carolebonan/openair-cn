@@ -40,6 +40,7 @@
 #include "3gpp_36.331.h"
 #include "3gpp_23.003.h"
 #include "TrackingAreaIdentity.h"
+#include "securityDef.h"
 
 #define S1AP_ENB_DEREGISTERED_IND(mSGpTR)        (mSGpTR)->ittiMsg.s1ap_eNB_deregistered_ind
 #define S1AP_ENB_INITIATED_RESET_REQ(mSGpTR)     (mSGpTR)->ittiMsg.s1ap_enb_initiated_reset_req
@@ -52,6 +53,8 @@
 #define S1AP_E_RAB_SETUP_RSP(mSGpTR)             (mSGpTR)->ittiMsg.s1ap_e_rab_setup_rsp
 #define S1AP_INITIAL_UE_MESSAGE(mSGpTR)          (mSGpTR)->ittiMsg.s1ap_initial_ue_message
 #define S1AP_NAS_DL_DATA_REQ(mSGpTR)             (mSGpTR)->ittiMsg.s1ap_nas_dl_data_req
+#define S1AP_ENB_PATH_SWITCH_REQUEST_FAILURE(mSGpTR)     (mSGpTR)->ittiMsg.s1ap_enb_path_switch_request_failure
+#define S1AP_ENB_PATH_SWITCH_REQUEST_ACK(mSGpTR)         (mSGpTR)->ittiMsg.s1ap_enb_path_switch_request_ack
 
 // NOT a ITTI message
 typedef struct s1ap_initial_ue_message_s {
@@ -147,6 +150,14 @@ enum s1cause {
   S1AP_INITIAL_CONTEXT_SETUP_FAILED,
   S1AP_SCTP_SHUTDOWN_OR_RESET
 };
+
+// List of possible causes for MME generated Modified Bearer request towards SGW
+enum s1CurrentProcedure {
+  NULL_PROC = 0,
+  INITIAL_ATTACH_PROC,
+  X2_HO_PROC
+};
+
 typedef struct itti_s1ap_ue_context_release_command_s {
   mme_ue_s1ap_id_t  mme_ue_s1ap_id;
   enb_ue_s1ap_id_t  enb_ue_s1ap_id:24;
@@ -214,5 +225,21 @@ typedef struct itti_s1ap_e_rab_setup_rsp_s {
   e_rab_list_t        e_rab_failed_to_setup_list;
 
 } itti_s1ap_e_rab_setup_rsp_t;
+
+typedef struct itti_s1ap_enb_path_switch_request_failure_s {
+  sctp_assoc_id_t         assoc_id;
+  mme_ue_s1ap_id_t        ue_id;
+  enb_ue_s1ap_id_t        enb_ue_s1ap_id;
+  S1ap_Cause_PR           cause_type;
+  long                    cause_value;
+} itti_s1ap_enb_path_switch_request_failure_t;
+
+typedef struct itti_s1ap_enb_path_switch_request_ack_s {
+  mme_ue_s1ap_id_t        ue_id;
+  sctp_assoc_id_t         assoc_id;
+  enb_ue_s1ap_id_t        enb_ue_s1ap_id;
+  uint8_t                 nh[AUTH_NH_SIZE];
+  long                    ncc;
+} itti_s1ap_enb_path_switch_request_ack_t;
 
 #endif /* FILE_S1AP_MESSAGES_TYPES_SEEN */

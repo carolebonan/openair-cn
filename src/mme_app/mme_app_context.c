@@ -145,6 +145,7 @@ ue_mm_context_t *mme_create_new_ue_context (void)
   new_p->initial_context_setup_rsp_timer.id = MME_APP_TIMER_INACTIVE_ID;
   new_p->ue_context_rel_cause = S1AP_INVALID_CAUSE;
 
+  new_p->ue_context_current_proc = NULL_PROC;
   return new_p;
 }
 

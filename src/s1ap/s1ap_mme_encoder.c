@@ -174,6 +174,8 @@ s1ap_mme_encode_successfull_outcome (
     return s1ap_mme_encode_s1setupresponse (message_p, buffer, length);
   case S1ap_ProcedureCode_id_Reset:
     return s1ap_mme_encode_resetack (message_p, buffer, length);
+  case S1ap_ProcedureCode_id_PathSwitchRequest:
+    return s1ap_mme_encode_s1pathswitchrequestack (message_p, buffer, length);
 
   default:
     OAILOG_DEBUG (LOG_S1AP, "Unknown procedure ID (%d) for successfull outcome message\n", (int)message_p->procedureCode);
@@ -193,7 +195,8 @@ s1ap_mme_encode_unsuccessfull_outcome (
   switch (message_p->procedureCode) {
   case S1ap_ProcedureCode_id_S1Setup:
     return s1ap_mme_encode_s1setupfailure (message_p, buffer, length);
-
+  case S1ap_ProcedureCode_id_PathSwitchRequest:
+    return s1ap_mme_encode_s1pathswitchrequestfailure (message_p, buffer, length);
   default:
     OAILOG_DEBUG (LOG_S1AP, "Unknown procedure ID (%d) for unsuccessfull outcome message\n", (int)message_p->procedureCode);
     break;

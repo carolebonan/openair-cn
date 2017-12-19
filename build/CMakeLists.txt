@@ -552,45 +552,89 @@ add_library(S6A
   ${S6A_DIR}/s6a_task.c
   ${S6A_DIR}/s6a_up_loc.c
   )
-
-set(SGW_DIR ${OPENAIRCN_DIR}/src/sgw)
-add_library (SGW
-  ${SGW_DIR}/pgw_config.c
-  ${SGW_DIR}/pgw_lite_paa.c
-  ${SGW_DIR}/pgw_pcef_emulation.c
-  ${SGW_DIR}/pgw_pco.c
-  ${SGW_DIR}/pgw_procedures.c
-  ${SGW_DIR}/pgw_ue_ip_address_alloc.c
-  ${SGW_DIR}/s11_causes.c
-  ${SGW_DIR}/sgw_config.c
-  ${SGW_DIR}/sgw_context_manager.c
-  ${SGW_DIR}/sgw_handlers.c
-  ${SGW_DIR}/sgw_task.c
-  ${SGW_DIR}/spgw_config.c
+if(${MOBILITY_REPO})
+  set(SGW_DIR ${OPENAIRCN_DIR}/src/sgw)
+  add_library (SGW
+    ${SGW_DIR}/pgw_config.c
+    ${MOBILITY_REPO_SRC}/src/sgw/sgw_mobility_handover_signaling_handler.c
+    ${SGW_DIR}/pgw_lite_paa.c
+    ${SGW_DIR}/pgw_pcef_emulation.c
+    ${SGW_DIR}/pgw_pco.c
+    ${SGW_DIR}/pgw_procedures.c
+    ${SGW_DIR}/pgw_ue_ip_address_alloc.c
+    ${SGW_DIR}/s11_causes.c
+    ${SGW_DIR}/sgw_config.c
+    ${SGW_DIR}/sgw_context_manager.c
+    ${SGW_DIR}/sgw_handlers.c
+    ${SGW_DIR}/sgw_task.c
+    ${SGW_DIR}/spgw_config.c
   )
-
-set(MME_DIR ${OPENAIRCN_DIR}/src/mme_app)
-add_library(MME_APP
-  ${MME_DIR}/mme_app_apn_selection.c
-  ${MME_DIR}/mme_app_authentication.c
-  ${MME_DIR}/mme_app_bearer.c
-  ${MME_DIR}/mme_app_bearer_context.c
-  ${MME_DIR}/mme_app_capabilities.c
-  ${MME_DIR}/mme_app_context.c
-  ${MME_DIR}/mme_app_detach.c
-  ${MME_DIR}/mme_app_edns_emulation.c
-  ${MME_DIR}/mme_app_itti_messaging.c
-  ${MME_DIR}/mme_app_location.c
-  ${MME_DIR}/mme_app_main.c
-  ${MME_DIR}/mme_app_pdn_context.c
-  ${MME_DIR}/mme_app_procedures.c
-  ${MME_DIR}/mme_app_sgw_selection.c
-  ${MME_DIR}/mme_app_statistics.c
-  ${MME_DIR}/mme_app_transport.c
-  ${MME_DIR}/mme_app_ue_context.c
-  ${MME_DIR}/mme_config.c
+else (${MOBILITY_REPO})
+  set(SGW_DIR ${OPENAIRCN_DIR}/src/sgw)
+  add_library (SGW
+    ${SGW_DIR}/pgw_config.c
+    ${SGW_DIR}/sgw_handover_signaling_handler.c
+    ${SGW_DIR}/pgw_lite_paa.c
+    ${SGW_DIR}/pgw_pcef_emulation.c
+    ${SGW_DIR}/pgw_pco.c
+    ${SGW_DIR}/pgw_procedures.c
+    ${SGW_DIR}/pgw_ue_ip_address_alloc.c
+    ${SGW_DIR}/s11_causes.c
+    ${SGW_DIR}/sgw_config.c
+    ${SGW_DIR}/sgw_context_manager.c
+    ${SGW_DIR}/sgw_handlers.c
+    ${SGW_DIR}/sgw_task.c
+    ${SGW_DIR}/spgw_config.c
   )
+endif ()
 
+if(${MOBILITY_REPO})
+  set(MME_DIR ${OPENAIRCN_DIR}/src/mme_app)
+  add_library(MME_APP
+    ${MME_DIR}/mme_app_apn_selection.c
+    ${MOBILITY_REPO_SRC}/src/mme_app/mme_app_mobility_handover_signaling_handler.c
+    ${MME_DIR}/mme_app_authentication.c
+    ${MME_DIR}/mme_app_bearer.c
+    ${MME_DIR}/mme_app_bearer_context.c
+    ${MME_DIR}/mme_app_capabilities.c
+    ${MME_DIR}/mme_app_context.c
+    ${MME_DIR}/mme_app_detach.c
+    ${MME_DIR}/mme_app_edns_emulation.c
+    ${MME_DIR}/mme_app_itti_messaging.c
+    ${MME_DIR}/mme_app_location.c
+    ${MME_DIR}/mme_app_main.c
+    ${MME_DIR}/mme_app_pdn_context.c
+    ${MME_DIR}/mme_app_procedures.c
+    ${MME_DIR}/mme_app_sgw_selection.c
+    ${MME_DIR}/mme_app_statistics.c
+    ${MME_DIR}/mme_app_transport.c
+    ${MME_DIR}/mme_app_ue_context.c
+    ${MME_DIR}/mme_config.c
+  )
+else (${MOBILITY_REPO})
+  set(MME_DIR ${OPENAIRCN_DIR}/src/mme_app)
+  add_library(MME_APP
+    ${MME_DIR}/mme_app_apn_selection.c
+    ${MME_DIR}/mme_app_handover_signaling_handler.c
+    ${MME_DIR}/mme_app_authentication.c
+    ${MME_DIR}/mme_app_bearer.c
+    ${MME_DIR}/mme_app_bearer_context.c
+    ${MME_DIR}/mme_app_capabilities.c
+    ${MME_DIR}/mme_app_context.c
+    ${MME_DIR}/mme_app_detach.c
+    ${MME_DIR}/mme_app_edns_emulation.c
+    ${MME_DIR}/mme_app_itti_messaging.c
+    ${MME_DIR}/mme_app_location.c
+    ${MME_DIR}/mme_app_main.c
+    ${MME_DIR}/mme_app_pdn_context.c
+    ${MME_DIR}/mme_app_procedures.c
+    ${MME_DIR}/mme_app_sgw_selection.c
+    ${MME_DIR}/mme_app_statistics.c
+    ${MME_DIR}/mme_app_transport.c
+    ${MME_DIR}/mme_app_ue_context.c
+    ${MME_DIR}/mme_config.c
+  )
+endif ()
 
 set(NAS_SRC ${OPENAIRCN_DIR}/src/nas/)
 set(libnas_api_OBJS

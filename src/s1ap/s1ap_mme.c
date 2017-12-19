@@ -56,6 +56,7 @@
 #include "mme_config.h"
 #include "timer.h"
 #include "itti_free_defined_msg.h"
+#include "s1ap_handover_signaling_handler.h"
 
 #if S1AP_DEBUG_LIST
 #  define eNB_LIST_OUT(x, args...) OAILOG_DEBUG (LOG_S1AP, "[eNB]%*s"x"\n", 4*indent, "", ##args)
@@ -195,6 +196,16 @@ s1ap_mme_thread (
     // From MME_APP task
     case S1AP_UE_CONTEXT_RELEASE_COMMAND:{
         s1ap_handle_ue_context_release_command (&received_message_p->ittiMsg.s1ap_ue_context_release_command);
+      }
+      break;
+    
+    case S1AP_ENB_PATH_SWITCH_REQUEST_ACK:{
+	      s1ap_handle_mme_path_switch_request_ack(&S1AP_ENB_PATH_SWITCH_REQUEST_ACK (received_message_p));
+      }
+      break;
+
+    case S1AP_ENB_PATH_SWITCH_REQUEST_FAILURE:{
+	      s1ap_handle_mme_path_switch_request_failure(&S1AP_ENB_PATH_SWITCH_REQUEST_FAILURE (received_message_p));
       }
       break;
 
@@ -599,6 +610,37 @@ s1ap_new_ue (
   return ue_ref;
 }
 
+
+void
+s1ap_update_ue (
+  ue_description_t * ue_ref, sctp_assoc_id_t target_sctp_assoc_id, enb_ue_s1ap_id_t target_enb_ue_s1ap_id)
+{
+  enb_description_t                      *source_enb_ref = NULL;
+  enb_description_t                      *target_enb_ref = NULL;
+  ue_description_t                       *tmp = NULL;
+
+  if (ue_ref == NULL)
+      return;
+  source_enb_ref = ue_ref->enb;
+  /*
+   *    * Updating number of UE
+   **/
+  
+  DevAssert(source_enb_ref->nb_ue_associated > 0);
+  s1ap_dump_enb(source_enb_ref);
+  source_enb_ref->nb_ue_associated--;
+  //hashtable_ts_free (&source_enb_ref->ue_coll, ue_ref->enb_ue_s1ap_id);
+  //TODO : Problem to fix: SEGFAULT
+  target_enb_ref = s1ap_is_enb_assoc_id_in_list (target_sctp_assoc_id);
+  DevAssert (target_enb_ref != NULL);
+  ue_ref->enb = target_enb_ref;
+  ue_ref->enb_ue_s1ap_id = target_enb_ue_s1ap_id;
+  s1ap_dump_enb(target_enb_ref);
+  //hashtable_ts_insert (&target_enb_ref->ue_coll, (const hash_key_t) target_enb_ue_s1ap_id, (void *)tmp);
+  //TODO : Problem to fix: SEGFAULT
+  target_enb_ref->nb_ue_associated++;
+  return;
+}
 //------------------------------------------------------------------------------
 void
 s1ap_remove_ue (

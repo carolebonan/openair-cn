@@ -35,6 +35,8 @@ void kdf(const uint8_t *key,
          uint8_t *out,
          const unsigned out_len);
 
+int derive_nh (const uint8_t *kasme_32, uint8_t *current_nh, uint8_t * new_nh);
+
 int derive_keNB(const uint8_t *kasme_32, const uint32_t nas_count, uint8_t *keNB);
 
 int derive_key_nas(algorithm_type_dist_t nas_alg_type, uint8_t nas_enc_alg_id,

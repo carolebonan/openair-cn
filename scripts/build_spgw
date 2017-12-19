@@ -44,10 +44,24 @@ function help()
   echo_error "  -f, --force                               No interactive script for installation of software packages."
   echo_error "  -h, --help                                Print this help."
   echo_error "  -i, --check-installed-software            Check installed software packages necessary to build and run S/P-GW (support Ubuntu 14.04)."
+  echo_error "  -s, --split-mob-git-repo  git_url         mobility git repository"
+  echo_error "  -S, --split-mob-lfs-repo  directory       mobility repository accessible through a local directory path"
   echo_error "  -v, --verbose                             Build process verbose."
   echo_error " "
 }
 
+# arg1 is git URL
+# global var for return value of function get_git_mobility_repo
+OPENAIR_CN_MOBILITY_DIR=/tmp/openair-cn-mobility
+function get_git_mobility_repo()
+{
+  # hardcoded path
+  rm -Rf $OPENAIR_CN_MOBILITY_DIR
+  git clone $1 $OPENAIR_CN_MOBILITY_DIR
+  if [ $? -ne 0 ]; then
+    echo_fatal "Failed to clone git URL $1, abort"
+  fi
+}
 
 
 function main()
@@ -90,6 +104,19 @@ function main()
         set_openair_env
         var_check_install_oai_software=1
         shift;
+        ;;
+      -s | --split-mob-git-repo)
+        get_git_mobility_repo $2
+        cmake_args="$cmake_args -DMOBILITY_REPO=True -DMOBILITY_REPO_SRC=$OPENAIR_CN_MOBILITY_DIR"
+        shift 2;
+        ;;
+      -S | --split-mob-lfs-repo)
+        if [ ! -d $2 ]; then
+          echo_fatal "\"$2\" is not a known directory on this local file system, abort"
+        fi
+        
+        cmake_args="$cmake_args -DMOBILITY_REPO=True -DMOBILITY_REPO_SRC=$2"
+        shift 2;
         ;;
       -v | --verbose)
         echo "Make build process verbose"

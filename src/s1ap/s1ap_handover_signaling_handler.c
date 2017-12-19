@@ -18,6 +18,11 @@
  * For more information about the OpenAirInterface (OAI) Software Alliance:
  *      contact@openairinterface.org
  */
+  
+
+#ifndef FILE_S1AP_HANDOVER_SIGNALING_HANDLERS_SEEN
+#define FILE_S1AP_HANDOVER_SIGNALING_HANDLERS_SEEN
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -83,3 +88,55 @@ s1ap_mme_handle_path_switch_request (
   // ignore message 
   OAILOG_FUNC_RETURN (LOG_S1AP, RETURNok);
 }
+
+
+
+
+int 
+s1ap_handle_mme_path_switch_request_ack (
+	const itti_mme_app_path_switch_request_ack_t *itti_mme_app_path_switch_request_ack_p)
+{
+  OAILOG_FUNC_IN (LOG_S1AP);
+  OAILOG_DEBUG (LOG_S1AP, "Path Switch Request ACK message received from MME \n");
+  OAILOG_FUNC_RETURN (LOG_S1AP, RETURNok);
+}
+
+int 
+s1ap_handle_mme_path_switch_request_failure (
+ 	const itti_mme_app_path_switch_request_failure_t *itti_mme_app_path_switch_request_failure_p)
+{
+  OAILOG_FUNC_IN (LOG_S1AP);
+  OAILOG_DEBUG (LOG_S1AP, "Path Switch Request FAILURE message received from MME \n");
+  OAILOG_FUNC_RETURN (LOG_S1AP, RETURNok);
+}
+
+int
+s1ap_mme_encode_s1pathswitchrequestfailure (
+  s1ap_message * message_p,
+  uint8_t ** buffer,
+  uint32_t * length)
+{
+  OAILOG_FUNC_IN (LOG_S1AP);
+  OAILOG_DEBUG (LOG_S1AP, "Encode Path Switch Request FAILURE \n");
+  
+  // ignore message 
+  OAILOG_FUNC_RETURN (LOG_S1AP, RETURNok);
+}
+
+int
+s1ap_mme_encode_s1pathswitchrequestack (
+  s1ap_message * message_p,
+  uint8_t ** buffer,
+  uint32_t * length)
+{
+  OAILOG_FUNC_IN (LOG_S1AP);
+  OAILOG_DEBUG (LOG_S1AP, "Encode Path Switch Request ACK \n");
+  // ignore message 
+  OAILOG_FUNC_RETURN (LOG_S1AP, RETURNok);
+}
+
+
+#endif
+
+
+

@@ -108,6 +108,12 @@ typedef struct emm_security_context_s {
   uint8_t   direction_decode; // SECU_DIRECTION_DOWNLINK, SECU_DIRECTION_UPLINK
 } emm_security_context_t;
 
+#define AUTH_NH_SIZE      AUTH_KASME_SIZE /* Next Hop, used duinr Handover, derived from Kenb   */
+
+typedef struct as_security_context_s {
+  uint8_t nh[AUTH_NH_SIZE];
+  int ncc;
+} as_security_context_t;
 
 /*
  * --------------------------------------------------------------------------
@@ -156,7 +162,7 @@ typedef struct emm_context_s {
 #define           EMM_CTXT_MEMBER_CURRENT_DRX_PARAMETER          ((uint32_t)1 << 12)
 #define           EMM_CTXT_MEMBER_PENDING_DRX_PARAMETER          ((uint32_t)1 << 13)
 #define           EMM_CTXT_MEMBER_EPS_BEARER_CONTEXT_STATUS      ((uint32_t)1 << 14)
-
+#define           EMM_CTXT_MEMBER_AS_SECURITY		         ((uint32_t)1 << 15)
 #define           EMM_CTXT_MEMBER_AUTH_VECTOR0                   ((uint32_t)1 << 26)
 //#define           EMM_CTXT_MEMBER_AUTH_VECTOR1                 ((uint32_t)1 << 27)  // reserved bit for AUTH VECTOR
 //#define           EMM_CTXT_MEMBER_AUTH_VECTOR2                 ((uint32_t)1 << 28)  // reserved bit for AUTH VECTOR
@@ -210,6 +216,8 @@ typedef struct emm_context_s {
   ms_network_capability_t  tau_ms_network_capability;         /* stored TAU Request IE Requirement MME24.301R10_5.5.3.2.4_4*/
   drx_parameter_t          _current_drx_parameter;            /* stored TAU Request IE Requirement MME24.301R10_5.5.3.2.4_4*/
   eps_bearer_context_status_t   _eps_bearer_context_status;/* stored TAU Request IE Requirement MME24.301R10_5.5.3.2.4_5*/
+  as_security_context_t    _as_security;
+  // Requirement MME24.301R10_4.4.2.1_2
   eps_network_feature_support_t _eps_network_feature_support;
 
 
@@ -230,7 +238,7 @@ typedef struct emm_context_s {
 #define           IS_EMM_CTXT_PRESENT_NON_CURRENT_SECURITY( eMmCtXtPtR )  (!!((eMmCtXtPtR)->member_present_mask & EMM_CTXT_MEMBER_NON_CURRENT_SECURITY))
 #define           IS_EMM_CTXT_PRESENT_UE_NETWORK_CAPABILITY( eMmCtXtPtR ) (!!((eMmCtXtPtR)->member_present_mask & EMM_CTXT_MEMBER_UE_NETWORK_CAPABILITY_IE))
 #define           IS_EMM_CTXT_PRESENT_MS_NETWORK_CAPABILITY( eMmCtXtPtR ) (!!((eMmCtXtPtR)->member_present_mask & EMM_CTXT_MEMBER_MS_NETWORK_CAPABILITY_IE))
-
+#define           IS_EMM_CTXT_PRESENT_AS_SECURITY( eMmCtXtPtR )           (!!((eMmCtXtPtR)->member_present_mask & EMM_CTXT_MEMBER_AS_SECURITY))
 #define           IS_EMM_CTXT_PRESENT_AUTH_VECTOR( eMmCtXtPtR, KsI )      (!!((eMmCtXtPtR)->member_present_mask & ((EMM_CTXT_MEMBER_AUTH_VECTOR0) << KsI)))
 
 #define           IS_EMM_CTXT_VALID_IMSI( eMmCtXtPtR )                    (!!((eMmCtXtPtR)->member_valid_mask & EMM_CTXT_MEMBER_IMSI))
@@ -246,6 +254,7 @@ typedef struct emm_context_s {
 #define           IS_EMM_CTXT_VALID_UE_NETWORK_CAPABILITY( eMmCtXtPtR )   (!!((eMmCtXtPtR)->member_valid_mask & EMM_CTXT_MEMBER_UE_NETWORK_CAPABILITY_IE))
 #define           IS_EMM_CTXT_VALID_MS_NETWORK_CAPABILITY( eMmCtXtPtR )   (!!((eMmCtXtPtR)->member_valid_mask & EMM_CTXT_MEMBER_MS_NETWORK_CAPABILITY_IE))
 
+#define           IS_EMM_CTXT_VALID_AS_SECURITY( eMmCtXtPtR )             (!!((eMmCtXtPtR)->member_valid_mask & EMM_CTXT_MEMBER_AS_SECURITY))
 #define           IS_EMM_CTXT_VALID_AUTH_VECTOR( eMmCtXtPtR, KsI )        (!!((eMmCtXtPtR)->member_valid_mask & ((EMM_CTXT_MEMBER_AUTH_VECTOR0) << KsI)))
 } emm_context_t;
 
@@ -312,6 +321,11 @@ void emm_ctx_set_valid_lvr_tai(emm_context_t * const ctxt, tai_t *lvr_tai) __att
 void emm_ctx_clear_auth_vectors(emm_context_t * const ctxt) __attribute__ ((nonnull)) __attribute__ ((flatten));
 void emm_ctx_clear_auth_vector(emm_context_t * const ctxt, ksi_t eksi) __attribute__ ((nonnull)) __attribute__ ((flatten));
 void emm_ctx_clear_security(emm_context_t * const ctxt) __attribute__ ((nonnull)) __attribute__ ((flatten));
+
+void emm_ctx_clear_as_security(emm_context_t * const ctxt) __attribute__ ((nonnull)) __attribute__ ((flatten));
+void emm_ctx_set_as_security_nh(emm_context_t * const ctxt, uint8_t * nh) __attribute__ ((nonnull)) __attribute__ ((flatten));
+void emm_ctx_set_as_security_ncc (emm_context_t * const ctxt, int ncc) __attribute__ ((nonnull)) __attribute__ ((flatten));
+
 void emm_ctx_set_security_type(emm_context_t * const ctxt, emm_sc_type_t sc_type) __attribute__ ((nonnull)) __attribute__ ((flatten));
 void emm_ctx_set_security_eksi(emm_context_t * const ctxt, ksi_t eksi) __attribute__ ((nonnull)) __attribute__ ((flatten));
 void emm_ctx_clear_security_vector_index(emm_context_t * const ctxt) __attribute__ ((nonnull)) __attribute__ ((flatten));

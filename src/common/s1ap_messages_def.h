@@ -39,6 +39,7 @@
 MESSAGE_DEF(S1AP_UPLINK_NAS_LOG            , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_uplink_nas_log)
 MESSAGE_DEF(S1AP_UE_CAPABILITY_IND_LOG     , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_ue_capability_ind_log)
 MESSAGE_DEF(S1AP_INITIAL_CONTEXT_SETUP_LOG , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_initial_context_setup_log)
+MESSAGE_DEF(S1AP_PATH_SWITCH_REQUEST_LOG   , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_pat_switch_request_log)
 MESSAGE_DEF(S1AP_NAS_NON_DELIVERY_IND_LOG  , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_nas_non_delivery_ind_log)
 MESSAGE_DEF(S1AP_DOWNLINK_NAS_LOG          , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_downlink_nas_log)
 MESSAGE_DEF(S1AP_S1_SETUP_LOG              , MESSAGE_PRIORITY_MED, IttiMsgText                      , s1ap_s1_setup_log)
@@ -60,3 +61,5 @@ MESSAGE_DEF(S1AP_E_RAB_SETUP_REQ            , MESSAGE_PRIORITY_MED, itti_s1ap_e_
 MESSAGE_DEF(S1AP_E_RAB_SETUP_RSP            , MESSAGE_PRIORITY_MED, itti_s1ap_e_rab_setup_rsp_t  ,           s1ap_e_rab_setup_rsp)
 MESSAGE_DEF(S1AP_ENB_INITIATED_RESET_REQ   ,  MESSAGE_PRIORITY_MED, itti_s1ap_enb_initiated_reset_req_t   ,  s1ap_enb_initiated_reset_req)
 MESSAGE_DEF(S1AP_ENB_INITIATED_RESET_ACK   ,  MESSAGE_PRIORITY_MED, itti_s1ap_enb_initiated_reset_ack_t   ,  s1ap_enb_initiated_reset_ack)
+MESSAGE_DEF(S1AP_ENB_PATH_SWITCH_REQUEST_ACK      , MESSAGE_PRIORITY_MED, itti_s1ap_enb_path_switch_request_ack_t     ,  s1ap_enb_path_switch_request_ack)
+MESSAGE_DEF(S1AP_ENB_PATH_SWITCH_REQUEST_FAILURE  , MESSAGE_PRIORITY_MED, itti_s1ap_enb_path_switch_request_failure_t ,  s1ap_enb_path_switch_request_failure)

@@ -127,6 +127,28 @@ void bstring_to_ip_address(bstring const bstr, ip_address_t * const ip_address)
   }
 }
 
+void copy_ip_address (ip_address_t * const ip_address_dst, ip_address_t * const ip_address_src)
+ 
+{
+  switch (ip_address_src->pdn_type) {
+  case IPv4:
+      ip_address_dst->pdn_type = IPv4;
+      memcpy(&ip_address_dst->address.ipv4_address, &ip_address_src->address.ipv4_address, 4);
+    break;
+  case IPv6:
+      ip_address_dst->pdn_type = IPv6;
+      memcpy(&ip_address_dst->address.ipv6_address, &ip_address_src->address.ipv6_address, 16);
+    break;
+  case IPv4_AND_v6:
+      ip_address_dst->pdn_type = IPv4_AND_v6;
+      memcpy(&ip_address_dst->address.ipv4_address, &ip_address_src->address.ipv4_address, 4);
+      memcpy(&ip_address_dst->address.ipv6_address, &ip_address_src->address.ipv6_address, 16);
+    break;
+  default:
+    ;
+  } 
+}
+
 //------------------------------------------------------------------------------
 void copy_paa(paa_t *paa_dst, paa_t *paa_src)
 {

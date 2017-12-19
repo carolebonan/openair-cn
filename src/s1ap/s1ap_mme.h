@@ -182,7 +182,13 @@ enb_description_t* s1ap_new_enb(void);
  * @returns Reference to the new UE element in list
  **/
 ue_description_t* s1ap_new_ue(const sctp_assoc_id_t sctp_assoc_id, enb_ue_s1ap_id_t enb_ue_s1ap_id);
+/** \brief Update the new target eNB to an new UE descriptor
+ ** \param ue_ref Reference of the UE element to update
+ ** \param target_sctp_assoc_id New association ID over SCTP
+ ** \param target_enb_ue_s1ap_id new ue ID over S1AP
+ ***/
 
+void s1ap_update_ue (ue_description_t * ue_ref, sctp_assoc_id_t target_sctp_assoc_id, enb_ue_s1ap_id_t target_enb_ue_s1ap_id);
 
 /** \brief Dump the eNB related information.
  * hashtable callback. It is called by hashtable_ts_apply_funct_on_elements()

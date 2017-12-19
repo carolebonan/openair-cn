@@ -291,6 +291,31 @@ inline void emm_ctx_clear_auth_vector(emm_context_t * const ctxt, ksi_t eksi)
     OAILOG_DEBUG (LOG_NAS_EMM, "ue_id=" MME_UE_S1AP_ID_FMT " cleared auth vectors\n", (PARENT_STRUCT(ctxt, struct ue_mm_context_s, emm_context))->mme_ue_s1ap_id);
   }
 }
+
+//------------------------------------------------------------------------------
+/* Clear AS security  */
+inline void emm_ctx_clear_as_security(emm_context_t * const ctxt)
+{
+  memset (&ctxt->_as_security, 0, sizeof (ctxt->_as_security));
+  ctxt->_as_security.ncc = 0;
+  OAILOG_DEBUG (LOG_NAS_EMM, "ue_id=" MME_UE_S1AP_ID_FMT " cleared AS security context \n", (PARENT_STRUCT(ctxt, struct ue_mm_context_s, emm_context))->mme_ue_s1ap_id);
+}
+
+//------------------------------------------------------------------------------
+inline void emm_ctx_set_as_security_nh(emm_context_t * const ctxt, uint8_t *nh)
+{
+  memcpy (ctxt->_as_security.nh, nh, AUTH_NH_SIZE);
+  OAILOG_TRACE (LOG_NAS_EMM, "ue_id=" MME_UE_S1AP_ID_FMT " set AS security context security NH\n", (PARENT_STRUCT(ctxt, struct ue_mm_context_s, emm_context))->mme_ue_s1ap_id);
+}
+
+
+//------------------------------------------------------------------------------
+inline void emm_ctx_set_as_security_ncc(emm_context_t * const ctxt, int ncc)
+{
+  ctxt->_as_security.ncc = ncc;
+  OAILOG_TRACE (LOG_NAS_EMM, "ue_id=" MME_UE_S1AP_ID_FMT " set AS security context security NCC %d\n", (PARENT_STRUCT(ctxt, struct ue_mm_context_s, emm_context))->mme_ue_s1ap_id, ncc);
+}
+
 //------------------------------------------------------------------------------
 /* Clear security  */
 inline void emm_ctx_clear_security(emm_context_t * const ctxt)
@@ -588,6 +613,7 @@ void emm_init_context(struct emm_context_s * const emm_ctx, const bool init_esm_
   emm_ctx_clear_ms_nw_cap(emm_ctx);
   emm_ctx_clear_ue_nw_cap(emm_ctx);
   emm_ctx_clear_drx_parameter(emm_ctx);
+  emm_ctx_clear_as_security(emm_ctx);
 
   if (init_esm_ctxt) {
     esm_init_context(&emm_ctx->esm_ctx);

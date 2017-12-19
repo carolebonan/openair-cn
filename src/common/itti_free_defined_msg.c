@@ -188,6 +188,7 @@ void itti_free_msg_content (MessageDef * const message_p)
   case S1AP_UPLINK_NAS_LOG:
   case S1AP_UE_CAPABILITY_IND_LOG:
   case S1AP_INITIAL_CONTEXT_SETUP_LOG:
+  case S1AP_PATH_SWITCH_REQUEST_LOG:
   case S1AP_NAS_NON_DELIVERY_IND_LOG:
   case S1AP_DOWNLINK_NAS_LOG:
   case S1AP_S1_SETUP_LOG:

@@ -102,7 +102,12 @@ s1ap_mme_decode_initiating (
         OAILOG_FUNC_RETURN (LOG_S1AP, ret);
       }
       break;
-    
+    case S1ap_ProcedureCode_id_PathSwitchRequest: {
+        OAILOG_INFO (LOG_S1AP, "S1AP Path Swith request  is received. Procedure code = %d\n", (int)initiating_p->procedureCode);
+        ret = s1ap_decode_s1ap_pathswitchrequesties (&message->msg.s1ap_PathSwitchRequestIEs, &initiating_p->value);
+        *message_id = S1AP_PATH_SWITCH_REQUEST_LOG;
+      }
+      break;
     case S1ap_ProcedureCode_id_Reset: {
         OAILOG_INFO (LOG_S1AP, "S1AP eNB RESET is received. Procedure code = %d\n", (int)initiating_p->procedureCode);
         ret = s1ap_decode_s1ap_reseties (&message->msg.s1ap_ResetIEs, &initiating_p->value);
@@ -254,6 +259,8 @@ int s1ap_free_mme_decode_pdu(
     } else {
       return free_s1ap_initialcontextsetupfailure(&message->msg.s1ap_InitialContextSetupFailureIEs);
     }
+  case S1AP_PATH_SWITCH_REQUEST_LOG:
+      return free_s1ap_pathswitchrequest(&message->msg.s1ap_PathSwitchRequestIEs);
   case S1AP_ENB_RESET_LOG:
     return free_s1ap_reset(&message->msg.s1ap_ResetIEs);
   default:

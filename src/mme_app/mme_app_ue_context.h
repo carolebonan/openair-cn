@@ -412,7 +412,9 @@ typedef struct ue_mm_context_s {
    */
   bstring                 ue_radio_capability;
 
-
+  /* Indicate the Current UE procedure : NULL, INITIAL ATTCH or X2 HO
+  */
+  enum s1CurrentProcedure           ue_context_current_proc;
 
   
   // Mobile Reachability Timer-Start when UE moves to idle state. Stop when UE moves to connected state

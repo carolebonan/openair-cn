@@ -381,7 +381,11 @@ void nas_itti_establish_cnf(
     derive_keNB (emm_ctx->_vector[emm_ctx->_security.vector_index].kasme,
         emm_ctx->_security.ul_count.seq_num | (emm_ctx->_security.ul_count.overflow << 8),
         NAS_CONNECTION_ESTABLISHMENT_CNF(message_p).kenb);
+    uint8_t                 tmp[32];
 
+    memcpy ((uint8_t *) tmp, NAS_CONNECTION_ESTABLISHMENT_CNF(message_p).kenb, AUTH_KENB_SIZE);	
+    derive_nh (emm_ctx->_vector[emm_ctx->_security.vector_index].kasme, (uint8_t *)tmp, emm_ctx->_as_security.nh);
+    emm_ctx->_as_security.ncc = (emm_ctx->_as_security.ncc + 1) % 7;
     MSC_LOG_TX_MESSAGE(
         MSC_NAS_MME,
         MSC_MMEAPP_MME,

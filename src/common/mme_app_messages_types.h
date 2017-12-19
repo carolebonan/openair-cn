@@ -42,6 +42,7 @@
 #define MME_APP_CREATE_DEDICATED_BEARER_REQ(mSGpTR)      (mSGpTR)->ittiMsg.mme_app_create_dedicated_bearer_req
 #define MME_APP_CREATE_DEDICATED_BEARER_RSP(mSGpTR)      (mSGpTR)->ittiMsg.mme_app_create_dedicated_bearer_rsp
 #define MME_APP_CREATE_DEDICATED_BEARER_REJ(mSGpTR)      (mSGpTR)->ittiMsg.mme_app_create_dedicated_bearer_rej
+#define MME_APP_PATH_SWITCH_REQUEST(mSGpTR)        	     (mSGpTR)->ittiMsg.mme_app_path_switch_request
 
 typedef struct itti_mme_app_connection_establishment_cnf_s {
   mme_ue_s1ap_id_t        ue_id;
@@ -99,6 +100,16 @@ typedef struct itti_mme_app_initial_context_setup_rsp_s {
   bstring                 transport_layer_address[BEARERS_PER_UE];
   s1u_teid_t              gtp_teid[BEARERS_PER_UE];
 } itti_mme_app_initial_context_setup_rsp_t;
+
+typedef struct itti_mme_app_path_switch_request_s {
+  sctp_assoc_id_t         assoc_id;
+  enb_ue_s1ap_id_t        enb_ue_s1ap_id;
+  mme_ue_s1ap_id_t        ue_id;
+  uint8_t                 no_of_e_rabs;
+  ebi_t                   e_rab_id[BEARERS_PER_UE];
+  bstring                 transport_layer_address[BEARERS_PER_UE];
+  s1u_teid_t              gtp_teid[BEARERS_PER_UE];
+} itti_mme_app_path_switch_request_t;
 
 typedef struct itti_mme_app_initial_context_setup_failure_s {
   uint32_t                mme_ue_s1ap_id;

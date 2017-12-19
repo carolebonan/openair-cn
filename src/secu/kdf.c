@@ -68,3 +68,14 @@ derive_keNB (
   kdf (kasme_32, 32, s, 7, keNB, 32);
   return 0;
 }
+
+int
+derive_nh (
+  const uint8_t *kasme_32,
+  uint8_t *current_nh,
+  uint8_t * new_nh)
+{
+  kdf (kasme_32, 32, current_nh, 32, new_nh, 32);
+  return 0;
+}
+
