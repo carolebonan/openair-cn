@@ -19,6 +19,12 @@
  *      contact@openairinterface.org
  */
   
+/*! \file s1ap_handover_signaling_handler.c
+ *  \author Carole Bonan
+ *  \company IRT b<>com
+ *  \date 2017
+ *  \version 1.0
+ */
 
 #ifndef FILE_S1AP_HANDOVER_SIGNALING_HANDLERS_SEEN
 #define FILE_S1AP_HANDOVER_SIGNALING_HANDLERS_SEEN

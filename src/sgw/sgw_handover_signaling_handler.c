@@ -19,12 +19,13 @@
  *      contact@openairinterface.org
  */
 
-/*! \file sgw_handlers.c
-  \brief
-  \author Lionel Gauthier
-  \company Eurecom
-  \email: lionel.gauthier@eurecom.fr
-*/
+/*! \file sgw_handover_signaling_handler.c
+ *  \author Carole Bonan
+ *  \company IRT b<>com
+ *  \date 2017
+ *  \version 1.0
+ */
+
 #define SGW
 #define SGW_HANDOVER_SIGNALLING_HANDLERS_C
 
@@ -73,7 +74,6 @@ static uint32_t                         g_gtpv1u_teid = 0;
 int
 sgw_handle_mobility_sgi_endpoint_updated (
   const itti_sgi_update_end_point_response_t * const resp_pP, teid_t enb_teid_S1u_src)
-//  const itti_sgi_update_end_point_response_t * const resp_pP, teid_t enb_teid_S1u_src, const ip_address_t *s_enb_ip_address)
 {
   OAILOG_FUNC_IN(LOG_SPGW_APP);
   int                                     rv = RETURNok;

@@ -27,6 +27,14 @@
  ** either expressed or implied, of the FreeBSD Project.
  **/
 
+/*! \file sgw_handover_signaling_handler.h
+ *  \author Carole Bonan
+ *  \company IRT b<>com
+ *  \date 2017
+ *  \version 1.0
+ */
+
+
 #ifndef FILE_SGW_MOBILITY_HANDOVER_SIGNALING_HANDLER_SEEN
 #define FILE_SGW_MOBILITY_HANDOVER_SIGNALING_HANDLER_SEEN
 #include "common_types.h"
